@@ -1,0 +1,14 @@
+hazelcast:
+  map:
+    "*_request":
+      event-journal:
+        enabled: true
+        capacity: 60000
+
+    cards:
+      in-memory-format: OBJECT
+
+  jet: 
+    enabled: true
+    resource-upload-enabled: true
+

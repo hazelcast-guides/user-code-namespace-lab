@@ -1,0 +1,154 @@
+services:
+
+  hz:
+    image: hazelcast/hazelcast:5.4.0-SNAPSHOT
+    environment:
+      JAVA_OPTS: -Dhazelcast.config=/project/hazelcast.yaml
+    ports:
+      - "5701:5701"
+    volumes:
+      - ".:/project"
+    networks:
+      - hznet
+
+#  hz2:
+#    image: hazelcast/hazelcast:5.4.0-SNAPSHOT
+#    environment:
+#      JAVA_OPTS: -Dhazelcast.config=/project/hazelcast.yaml
+#      CLASSPATH: /project/common/target/common-1.0-SNAPSHOT.jar
+#    volumes:
+#      - ".:/project"
+#    networks:
+#      - hznet
+#    profiles:
+#      - scaleup
+#
+#  hz3:
+#    image: hazelcast/hazelcast:5.4.0-SNAPSHOT
+#    environment:
+#      JAVA_OPTS: -Dhazelcast.config=/project/hazelcast.yaml
+#      CLASSPATH: /project/common/target/common-1.0-SNAPSHOT.jar
+#    volumes:
+#      - ".:/project"
+#    networks:
+#      - hznet
+#    profiles:
+#      - scaleup
+
+  mc:
+    image: hazelcast/management-center:5.4
+    environment:
+      MC_DEFAULT_CLUSTER: dev
+      MC_DEFAULT_CLUSTER_MEMBERS: hz1:5701
+    ports:
+      - "8080:8080"
+    networks:
+      - hznet
+
+#  refdata-loader:
+#    image: amazoncorretto:17
+#    command: java -jar /project/refdata-loader/target/refdata-loader-1.0-SNAPSHOT.jar
+#    environment:
+#      HZ_SERVERS: hz1
+#      HZ_CLUSTER_NAME: dev
+#      CARD_COUNT: 10000
+#    volumes:
+#      - ".:/project"
+#    networks:
+#      - hznet
+
+#  event-generator:
+#     build:
+#       context: event-generator
+#     command: python /project/event-generator/event_generator.py
+#     environment:
+#       HZ_SERVERS: hz1
+#       HZ_CLUSTER_NAME: dev
+#       KAFKA_BOOTSTRAP_SERVERS: "redpanda:9092"
+#       KAFKA_TRANSACTION_TOPIC: "transactions"
+#     volumes:
+#       - ".:/project"
+#     networks:
+#       - hznet
+
+
+  authorization-service:
+    image: amazoncorretto:21
+    command: >
+     java -Dhazelcast.client.config=/project/config/hazelcast-client.yaml 
+       -jar /project/authorization-service/target/authorization-service-1.0-SNAPSHOT.jar
+    environment:
+     HZCLIENT_INSTANCENAME: authorization_service
+     HZ_SERVERS: hz
+     HZ_CLUSTER_NAME: dev
+    volumes:
+     - ".:/project"
+    ports:
+     - "8888:8080"
+    networks:
+     - hznet
+
+  # performance-test:
+  #   build:
+  #     context: ./performance-test
+  #   entrypoint: /project/performance-test/perftest.sh
+  #   environment:
+  #     HZ_SERVERS: hz
+  #     HZ_CLUSTER_NAME: dev
+  #   volumes:
+  #     - ".:/project"
+  #   ports:
+  #     - "8089:8089"
+  #   networks:
+  #     - hznet
+
+  # load-routing-config-1:
+  #   image: amazoncorretto:21
+  #   command: >
+  #     java -cp /project/routing-tools/target/dependency/*
+  #          -Dhazelcast.client.config=/project/config/cli-client.yaml 
+  #          hazelcast.platform.solutions.pipeline.dispatcher.RoutingConfigTool load 
+  #           --input /project/config/routing_1.json
+  #   environment:
+  #     HZCLIENT_INSTANCENAME: config_tool
+  #   volumes:
+  #     - ".:/project"
+  #   networks:
+  #     - hznet
+  #   profiles:
+  #     - disabled
+
+  # load-routing-config-2:
+  #   image: amazoncorretto:21
+  #   command: >
+  #     java -cp /project/routing-tools/target/dependency/*
+  #          -Dhazelcast.client.config=/project/config/cli-client.yaml 
+  #          hazelcast.platform.solutions.pipeline.dispatcher.RoutingConfigTool load 
+  #          --input /project/config/routing_2.json
+  #   environment:
+  #     HZCLIENT_INSTANCENAME: config_tool
+  #   volumes:
+  #     - ".:/project"
+  #   networks:
+  #     - hznet
+
+  # dump-routing-config:
+  #   image: amazoncorretto:21
+  #   command: >
+  #     java -cp /project/routing-tools/target/dependency/*
+  #          -Dhazelcast.client.config=/project/config/hazelcast-client.yaml 
+  #          hazelcast.platform.solutions.pipeline.dispatcher.RoutingConfigTool dump 
+  #          --output routes.json
+  #   environment:
+  #     HZCLIENT_INSTANCENAME: config_tool
+  #   volumes:
+  #     - ".:/project"
+  #   networks:
+  #     - hznet
+  #   profiles:
+  #     - disabled
+
+
+networks:
+  hznet: 
+  
