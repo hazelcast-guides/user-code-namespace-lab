@@ -25,13 +25,6 @@
             <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>com.hazelcast.jet</groupId>
-            <artifactId>hazelcast-jet-kafka</artifactId>
-            <version>${hazelcast.version}</version>
-            <!-- since it is on the server class path we don't need to put it in the jar -->
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
             <groupId>com.hazelcast.training</groupId>
             <artifactId>common</artifactId>
             <version>${project.version}</version>

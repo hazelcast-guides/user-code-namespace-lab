@@ -4,6 +4,7 @@ services:
     image: hazelcast/hazelcast:5.4.0-SNAPSHOT
     environment:
       JAVA_OPTS: -Dhazelcast.config=/project/hazelcast.yaml
+      CLASSPATH: /project/common/target/common-1.0-SNAPSHOT.jar
     ports:
       - "5701:5701"
     volumes:
@@ -39,23 +40,23 @@ services:
     image: hazelcast/management-center:5.4
     environment:
       MC_DEFAULT_CLUSTER: dev
-      MC_DEFAULT_CLUSTER_MEMBERS: hz1:5701
+      MC_DEFAULT_CLUSTER_MEMBERS: hz:5701
     ports:
       - "8080:8080"
     networks:
       - hznet
 
-#  refdata-loader:
-#    image: amazoncorretto:17
-#    command: java -jar /project/refdata-loader/target/refdata-loader-1.0-SNAPSHOT.jar
-#    environment:
-#      HZ_SERVERS: hz1
-#      HZ_CLUSTER_NAME: dev
-#      CARD_COUNT: 10000
-#    volumes:
-#      - ".:/project"
-#    networks:
-#      - hznet
+  refdata-loader:
+    image: amazoncorretto:21
+    command: java -jar /project/refdata-loader/target/refdata-loader-1.0-SNAPSHOT.jar
+    environment:
+      HZ_SERVERS: hz
+      HZ_CLUSTER_NAME: dev
+      CARD_COUNT: 10000
+    volumes:
+      - ".:/project"
+    networks:
+      - hznet
 
 #  event-generator:
 #     build:
@@ -75,12 +76,10 @@ services:
   authorization-service:
     image: amazoncorretto:21
     command: >
-     java -Dhazelcast.client.config=/project/config/hazelcast-client.yaml 
-       -jar /project/authorization-service/target/authorization-service-1.0-SNAPSHOT.jar
+     java -Dhazelcast.client.config=/project/config/hazelcast-client.yaml
+        -jar /project/authorization-service/target/authorization-service-1.0-SNAPSHOT.jar
     environment:
      HZCLIENT_INSTANCENAME: authorization_service
-     HZ_SERVERS: hz
-     HZ_CLUSTER_NAME: dev
     volumes:
      - ".:/project"
     ports:

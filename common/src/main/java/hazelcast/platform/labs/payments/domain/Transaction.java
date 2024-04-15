@@ -2,8 +2,17 @@ package hazelcast.platform.labs.payments.domain;
 
 import com.fasterxml.jackson.annotation.JsonSetter;
 
-public class Transaction {
-    public enum Status {NEW, DECLINED_BIG_TXN, DECLINED_LOCKED, DECLINED_OVER_AUTH_LIMIT, APPROVED};
+import java.io.Serializable;
+
+/*
+ * Represents a Credit Card transaction.
+ *
+ * Note that an instance of this class occur inside of TransactionEntryProcessor,
+ * which means that it must be java.io.Serializable (otherwise we could use
+ * a more efficient form of Serialization like Compact).
+ */
+public class Transaction implements Serializable {
+    public enum Status {NEW, INVALID_CARD, DECLINED_BIG_TXN, DECLINED_LOCKED, DECLINED_OVER_AUTH_LIMIT, APPROVED};
     private String cardNumber;
     private String transactionId;
     private int amount;

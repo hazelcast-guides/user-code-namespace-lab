@@ -10,7 +10,7 @@ import com.hazelcast.jet.kafka.KafkaSources;
 import com.hazelcast.jet.pipeline.*;
 import hazelcast.platform.labs.payments.CardState;
 import hazelcast.platform.labs.payments.domain.Card;
-import hazelcast.platform.labs.payments.domain.CardEntryProcessor;
+import hazelcast.platform.labs.payments.domain.TransactionEntryProcessor;
 import hazelcast.platform.labs.payments.domain.Names;
 import hazelcast.platform.labs.payments.domain.Transaction;
 
@@ -60,7 +60,7 @@ public class AuthorizationPipelineSolution {
         Sink<Transaction> cardMapSink = Sinks.mapWithEntryProcessor(
                 Names.CARD_MAP_NAME,
                 Transaction::getCardNumber,
-                txn -> new CardEntryProcessor(txn.getAmount()));
+                txn -> new TransactionEntryProcessor(txn.getAmount()));
 
         /*
          * Read a stream of Map.Entry<String,String> from the stream. entry.key is the card number and
