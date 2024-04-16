@@ -15,18 +15,10 @@ import java.util.Map;
 /**
  * Expects the following environment variables
  * <p>
- * HZ_SERVERS  A comma-separated list of Hazelcast servers in host:port format.  Port may be omitted.
- *             Any whitespace around the commas will be removed.  Required.
- * <p>
- * HZ_CLUSTER_NAME  The name of the Hazelcast cluster to connect.  Required.
- * <p>
  * CARD_COUNT The number of machines credit cards to load
  *
  */
 public class RefdataLoader {
-    private static final String HZ_SERVERS_PROP = "HZ_SERVERS";
-    private static final String HZ_CLUSTER_NAME_PROP = "HZ_CLUSTER_NAME";
-
     private static final String CARD_COUNT_PROP = "CARD_COUNT";
 
     private static final String CARD_MAPPING_SQL =
@@ -41,9 +33,6 @@ public class RefdataLoader {
                 "'valueFormat' = 'compact' ," +
                 "'valueCompactTypeName' = 'hazelcast.platform.labs.payments.domain.Card')";
 
-    private static String []hzServers;
-    private static String hzClusterName;
-
     private static int cardCount;
 
     private static String getRequiredProp(String propName){
@@ -56,12 +45,6 @@ public class RefdataLoader {
     }
 
     private static void configure(){
-        String hzServersProp = getRequiredProp(HZ_SERVERS_PROP);
-        hzServers = hzServersProp.split(",");
-        for (int i = 0; i < hzServers.length; ++i) hzServers[i] = hzServers[i].trim();
-
-        hzClusterName = getRequiredProp(HZ_CLUSTER_NAME_PROP);
-
         String temp = getRequiredProp(CARD_COUNT_PROP);
         try {
             cardCount = Integer.parseInt(temp);
@@ -84,13 +67,7 @@ public class RefdataLoader {
     public static void main(String []args){
         configure();
 
-        ClientConfig clientConfig = new ClientConfig();
-        clientConfig.setClusterName(hzClusterName);
-        clientConfig.getNetworkConfig().addAddress(hzServers);
-        clientConfig.getConnectionStrategyConfig().setAsyncStart(false);
-        clientConfig.getConnectionStrategyConfig().setReconnectMode(ClientConnectionStrategyConfig.ReconnectMode.ON);
-
-        HazelcastInstance hzClient = HazelcastClient.newHazelcastClient(clientConfig);
+        HazelcastInstance hzClient = HazelcastClient.newHazelcastClient();
 
         doSQLMappings(hzClient);
 
