@@ -41,6 +41,7 @@ services:
     environment:
       MC_DEFAULT_CLUSTER: dev
       MC_DEFAULT_CLUSTER_MEMBERS: hz:5701
+      HZ_LICENSEKEY: ${HZ_LICENSEKEY}
     ports:
       - "8080:8080"
     networks:

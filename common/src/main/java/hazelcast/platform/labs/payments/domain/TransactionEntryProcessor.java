@@ -26,12 +26,17 @@ public class TransactionEntryProcessor implements EntryProcessor<String, Generic
         if (card == null)
             return Transaction.Status.INVALID_CARD.name();
 
-        if (transaction.getAmount() > 5000)
-            return Transaction.Status.DECLINED_BIG_TXN.name();
 
-        boolean locked = card.getBoolean("locked");
-        if (locked)
-            return Transaction.Status.DECLINED_LOCKED.name();
+//
+//        Add the big transaction check and the card locked check by
+//        un-commenting these lines
+//
+//        if (transaction.getAmount() > 5000)
+//            return Transaction.Status.DECLINED_BIG_TXN.name();
+//
+//        boolean locked = card.getBoolean("locked");
+//        if (locked)
+//            return Transaction.Status.DECLINED_LOCKED.name();
 
         int authorizedDollars = card.getInt32("authorizedDollars");
         int creditLimitDollars = card.getInt32("creditLimitDollars");
