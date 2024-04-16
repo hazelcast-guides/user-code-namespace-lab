@@ -1,12 +1,12 @@
 services:
 
   hz:
-    image: hazelcast/hazelcast:5.4.0-SNAPSHOT
+    image: hazelcast/hazelcast-enterprise:5.4.0-SNAPSHOT
     environment:
       JAVA_OPTS: -Dhazelcast.config=/project/hazelcast.yaml
-      CLASSPATH: /project/common/target/common-1.0-SNAPSHOT.jar
-    ports:
-      - "5701:5701"
+      HZ_LICENSEKEY: ${HZ_LICENSEKEY}
+#    ports:
+#      - "5701:5701"
     volumes:
       - ".:/project"
     networks:

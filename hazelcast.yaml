@@ -1,9 +1,14 @@
 hazelcast:
-  map:
-    cards:
-      in-memory-format: OBJECT
+  user-code-namespaces:
+    enabled: true
+    card-ns: []
 
-  jet: 
+  jet:
     enabled: true
     resource-upload-enabled: true
+
+  map:
+    cards:
+      user-code-namespace: card-ns
+
 

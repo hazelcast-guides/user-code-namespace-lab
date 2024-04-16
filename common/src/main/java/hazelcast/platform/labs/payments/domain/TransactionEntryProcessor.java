@@ -1,6 +1,7 @@
 package hazelcast.platform.labs.payments.domain;
 
 import com.hazelcast.map.EntryProcessor;
+import com.hazelcast.nio.serialization.genericrecord.GenericRecord;
 
 import java.util.Map;
 
@@ -14,26 +15,31 @@ import java.util.Map;
  * See https://docs.hazelcast.org/docs/5.3.5/javadoc/index.html?com/hazelcast/map/EntryProcessor.html
  * for more.
  */
-public class TransactionEntryProcessor implements EntryProcessor<String, Card, String> {
+public class TransactionEntryProcessor implements EntryProcessor<String, GenericRecord, String> {
     public TransactionEntryProcessor(Transaction t) {
         this.transaction = t;
     }
     private final Transaction transaction;
     @Override
-    public String process(Map.Entry<String, Card> entry) {
-        Card card = entry.getValue();
+    public String process(Map.Entry<String, GenericRecord> entry) {
+        GenericRecord card = entry.getValue();
         if (card == null)
             return Transaction.Status.INVALID_CARD.name();
 
         if (transaction.getAmount() > 5000)
             return Transaction.Status.DECLINED_BIG_TXN.name();
 
-        if (card.getLocked())
-                return Transaction.Status.DECLINED_LOCKED.name();
+        boolean locked = card.getBoolean("locked");
+        if (locked)
+            return Transaction.Status.DECLINED_LOCKED.name();
 
-        if (card.getAuthorizedDollars() + transaction.getAmount() <= card.getCreditLimitDollars()){
-            card.addAuthorizedDollars(transaction.getAmount());
-            entry.setValue(card);
+        int authorizedDollars = card.getInt32("authorizedDollars");
+        int creditLimitDollars = card.getInt32("creditLimitDollars");
+
+        if (authorizedDollars + transaction.getAmount() <= creditLimitDollars){
+            GenericRecord updatedCard = card.newBuilderWithClone()
+                    .setInt32("authorizedDollars", authorizedDollars + transaction.getAmount()).build();
+            entry.setValue(updatedCard);
             return Transaction.Status.APPROVED.name();
         } else {
             return Transaction.Status.DECLINED_OVER_AUTH_LIMIT.name();

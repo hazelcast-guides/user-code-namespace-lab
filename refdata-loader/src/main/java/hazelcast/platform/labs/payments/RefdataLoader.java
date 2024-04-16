@@ -6,6 +6,7 @@ import com.hazelcast.client.config.ClientConnectionStrategyConfig;
 import com.hazelcast.core.HazelcastInstance;
 import com.hazelcast.map.IMap;
 import hazelcast.platform.labs.payments.domain.Card;
+import hazelcast.platform.labs.payments.domain.FakeData;
 import hazelcast.platform.labs.payments.domain.Names;
 
 import java.util.HashMap;
@@ -106,7 +107,7 @@ public class RefdataLoader {
         } else {
             Map<String, Card> batch = new HashMap<>();
             for(int i=0; i < toLoad; ++i){
-                Card c = Card.fake();
+                Card c = FakeData.card();
                 batch.put(c.getCardNumber(), c);
                 int BATCH_SIZE = 1000;
                 if (batch.size() == BATCH_SIZE){
