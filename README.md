@@ -1,6 +1,6 @@
 # Overview 
 
-This is a short demonstration of user code namespaces.  In this lab we will be working 
+This is a  demonstration of user code namespaces.  In this lab we will be working 
 with a spring boot service that uses an entry-processor to perform a basic authorization 
 and then we will update the entry-processor without restarting the cluster.
 
@@ -10,13 +10,13 @@ You will need a development laptop with the following installed:
 - Docker Desktop
 - A functional Java IDE
 - Maven
-- A Hazelcast Enterpise License that enables user code namespaces
+- __A Hazelcast Enterpise License that enables user code namespaces__
 
-# Overview of the Environment
+# The Environment
 
-This lab run within an isolated Docker environment. 
+This lab run within an isolated Docker environment. See `compose.yaml`
 
-__TODO__
+Management center can be accessed at http://localhost:8080
 
 # Walk Through
 
@@ -26,11 +26,12 @@ Copy `sample.env` to `.env`.
 
 Edit `.env` to include your license key.
 
-Then build the project and bring up the environment using Docker.
+Then build the project and bring up the environment using Docker. We'll 
+start 2 Hazelcast instances to make it more realistic.
 
 ```shell
 mvn clean install
-docker compose up -d 
+docker compose up -d --scale hz=2
 ```
 
 ### Review `hazelcast.yaml`

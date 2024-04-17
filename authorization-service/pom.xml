@@ -20,7 +20,7 @@
         <maven.compiler.source>21</maven.compiler.source>
         <maven.compiler.target>21</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <hazelcast.version>5.4.0-SNAPSHOT</hazelcast.version>
+        <hazelcast.version>5.4.0</hazelcast.version>
         <common.version>1.0-SNAPSHOT</common.version>
     </properties>
 

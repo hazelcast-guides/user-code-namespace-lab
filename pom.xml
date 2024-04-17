@@ -15,7 +15,7 @@
              therefore needs to be runnable under Java 11 -->
         <maven.compiler.source>21</maven.compiler.source>
         <maven.compiler.target>21</maven.compiler.target>
-        <hazelcast.version>5.4.0-SNAPSHOT</hazelcast.version>
+        <hazelcast.version>5.4.0</hazelcast.version>
         <jackson.version>2.15.1</jackson.version>
     </properties>
 
