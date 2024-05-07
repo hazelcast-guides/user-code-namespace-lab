@@ -12,7 +12,7 @@ import java.util.Map;
  *
  * EntryProcessors are a Hazelcast mechanism for performing read/update operations safely,
  * without the need for holding a lock or other concurrency management techniques.
- * See https://docs.hazelcast.org/docs/5.3.5/javadoc/index.html?com/hazelcast/map/EntryProcessor.html
+ * See https://docs.hazelcast.org/docs/latest/javadoc/com/hazelcast/map/EntryProcessor.html
  * for more.
  */
 public class TransactionEntryProcessor implements EntryProcessor<String, GenericRecord, String> {

@@ -10,9 +10,6 @@
     <packaging>pom</packaging>
 
     <properties>
-        <!-- Why Java 11?   this is what is currently built into the hazelcast Docker image.
-             Pipeline code from this project will run on the Hazelcast server and
-             therefore needs to be runnable under Java 11 -->
         <maven.compiler.source>21</maven.compiler.source>
         <maven.compiler.target>21</maven.compiler.target>
         <hazelcast.version>5.4.0</hazelcast.version>
